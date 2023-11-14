@@ -11,6 +11,16 @@
         <welcome-file>default.htm</welcome-file>
         <welcome-file>default.jsp</welcome-file>
     </welcome-file-list>
+
+    <filter>
+        <filter-name>SessionFilter</filter-name>
+        <filter-class>com.example.hostel.filters.SessionFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>SessionFilter</filter-name>
+        <url-pattern>/welcome?command=ADMIN_PAGE</url-pattern>
+    </filter-mapping>
+
     <servlet>
         <servlet-name>main</servlet-name>
         <servlet-class>com.example.hostel.controller.FrontController</servlet-class>

@@ -5,17 +5,19 @@ public class User {
     private Boolean adminRole = false;
     private String login;
     private String password;
+    private String email;
     private float discount = 0;
     private Boolean banStatus = false;
     private String userName = "John";
     private String userSurname = "Doe";
 
-    public User(Boolean adminRole, String login, String password, String userName, String userSurname) {
+    public User(Boolean adminRole, String login, String password, String userName, String userSurname, String email) {
         this.adminRole = adminRole;
         this.login = login;
         this.password = password;
         this.userName = userName;
         this.userSurname = userSurname;
+        this.email = email;
     }
 
     public User() {
@@ -85,5 +87,13 @@ public class User {
 
     public void setUserSurname(String userSurname) {
         this.userSurname = userSurname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

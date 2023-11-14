@@ -1,6 +1,7 @@
 package com.example.hostel.controller;
 
 import com.example.hostel.exceptions.CommandException;
+import com.example.hostel.exceptions.DaoException;
 import com.example.hostel.logic.CommandHelper;
 import com.example.hostel.logic.ICommand;
 
@@ -53,19 +54,20 @@ public class FrontController extends HttpServlet {
     private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String commandName = request.getParameter(COMMAND_NAME);
         String page;
-
-        if (commandName != null) {
+        if(request.getSession().getAttribute("role") == "BANNED") {
+            page = JspPageName.BAN_PAGE;
+        } else if (commandName != null) {
             try {
                 ICommand command = CommandHelper.getInstance().getCommand(commandName);
                 page = command.execute(request);
-            } catch (CommandException e) {
+            } catch (CommandException | DaoException e) {
                 request.setAttribute("message", e.getMessage());
                 page = JspPageName.ERROR_PAGE;
             }
         } else if (request.getParameter("sessionLocale") != null) {
             try {
                 page = CommandHelper.getInstance().getCommand("MAIN_PAGE").execute(request);
-            } catch (CommandException e) {
+            } catch (CommandException | DaoException e) {
                 request.setAttribute("message", e.getMessage());
                 page = JspPageName.ERROR_PAGE;
             }

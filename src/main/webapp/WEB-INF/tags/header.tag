@@ -1,22 +1,53 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ attribute name="pageTitle" required="true" %>
-<html>
-<head>
-    <title>HOTEL | ${pageTitle}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>TO DO</header>
-    <main>
-        <br />
-        <jsp:doBody />
-    </main>
-</body>
-</html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+       <div class="container-fluid">
+           <a href="${pageContext.request.contextPath}/welcome?command=MAIN_PAGE" class="navbar-brand">
+               HOSTEL
+           </a>
+           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+               <span class="navbar-toggler-icon"></span>
+           </button>
+           <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarNavAltMarkup">
+               <div class="navbar-nav">
+                   <a class="nav-link" href="#">About Us</a>
+                   <a class="nav-link" href="#">Book</a>
+                   <c:choose>
+                       <c:when test="${ sessionScope.role eq null }">
+                           <a class="nav-link" href="${pageContext.request.contextPath}/welcome?command=REG_COMMAND">Registration</a>
+                       </c:when>
+                   </c:choose>
+                   <c:choose>
+                       <c:when test="${ sessionScope.role eq 'admin' }">
+                           <a class="nav-link" href="${pageContext.request.contextPath}/welcome?command=ADMIN_PAGE">Admin Panel</a>
+                       </c:when>
+                   </c:choose>
+
+               </div>
+               <div class="d-flex align-items-center">
+                   <c:choose>
+                       <c:when test="${ sessionScope.role eq null}">
+                           <form class="d-flex" action="welcome" method="POST">
+                               <input type="hidden" name="command" value="AUTH_PAGE" />
+                               <input class="form-control me-2" name="login" id="login" type="text" placeholder="Login" aria-label="Login">
+                               <input class="form-control me-2" name="password" id="password" type="password" placeholder="Password" aria-label="Password">
+                               <button class="btn btn-outline-success" type="submit">Sing In</button>
+                           </form>
+                       </c:when>
+                       <c:otherwise>
+                           WELCOME ${ sessionScope.name }!
+                           <c:choose>
+                               <c:when test="${ sessionScope.role eq 'admin' || sessionScope.role eq 'client' }">
+                                   <a class="nav-link" href="${pageContext.request.contextPath}/welcome?command=SINGOUT_COMMAND">SING OUT</a>
+                               </c:when>
+                           </c:choose>
+                       </c:otherwise>
+                   </c:choose>
+               </div>
+
+
+
+           </div>
+       </div>
+    </nav>
+</header>

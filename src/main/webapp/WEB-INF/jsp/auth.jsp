@@ -1,7 +1,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<tags:header pageTitle="AUTH">
+<tags:links pageTitle="AUTH">
     <section class="text-center">
         <!-- Background image -->
         <div class="p-5 bg-image" style="
@@ -66,4 +66,4 @@
         </div>
     </section>
 
-</tags:header>
+</tags:links>

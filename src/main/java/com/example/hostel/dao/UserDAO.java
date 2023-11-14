@@ -21,6 +21,7 @@ public interface UserDAO {
      * @throws DaoException throws when there is some errors during dao method execution
      */
     Optional<User> findUserByLoginAndPass(String login, String password) throws DaoException;
+    User findUserByLogin(String login) throws  DaoException;
 
     /**
      * Add new user to database
@@ -33,6 +34,7 @@ public interface UserDAO {
     Map<String, String> addUser(User user, HttpSession session) throws DaoException;
 
     Map<String, String> setUserBan(User user) throws DaoException;
+    Map<String, String> setUserAdmin(User user) throws DaoException;
     Map<String, String> setUserDiscount(User user) throws DaoException;
     /**
      * Delete user from database

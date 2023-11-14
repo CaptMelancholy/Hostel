@@ -1,6 +1,6 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<tags:header pageTitle="404">
+<tags:links pageTitle="404">
 <style>.page_404{ padding:40px 0; background:#fff; font-family: 'Arvo', serif;
 }
 
@@ -22,13 +22,6 @@
     font-size:80px;
 }
 
-.link_404{
-    color: #fff!important;
-    padding: 10px 20px;
-    background: #39ac31;
-    margin: 20px 0;
-    display: inline-block;
-}
 .contant_box_404{ margin-top:-50px;}
 </style>
 <section class="page_404">
@@ -54,4 +47,4 @@
         </div>
     </div>
 </section>
-</tags:header>
+</tags:links>

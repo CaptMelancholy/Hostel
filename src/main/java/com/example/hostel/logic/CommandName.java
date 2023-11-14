@@ -6,6 +6,10 @@ public enum CommandName {
     REG_COMMAND,
     USER_BOOK,
     ADMIN_PAGE,
+    SINGOUT_COMMAND,
+    FORBIDDEN_COMMAND,
     UNKNOWN_COMMAND,
+    BAN_COMMAND,
+    BAN_USER_COMMAND,
 
 }
