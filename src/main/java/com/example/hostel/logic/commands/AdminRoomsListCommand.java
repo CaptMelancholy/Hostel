@@ -1,7 +1,6 @@
 package com.example.hostel.logic.commands;
 
 import com.example.hostel.beans.rooms.Rooms;
-import com.example.hostel.beans.user.User;
 import com.example.hostel.controller.JspPageName;
 import com.example.hostel.dao.OrdersDAO;
 import com.example.hostel.dao.RoomsDAO;
@@ -31,12 +30,12 @@ public class AdminRoomsListCommand implements ICommand {
                 case "ADD_ROOM":
                     Long num = Long.valueOf(request.getParameter("num"));
                     float price = Float.parseFloat(request.getParameter("price"));
-                    String discription = request.getParameter("discription");
-                    request.setAttribute("message", addRoom(request, num, price, discription));
+                    String description = request.getParameter("description");
+                    request.setAttribute("message", addRoom(num, price, description));
                     break;
                 case "DELETE_ROOM":
                     Long id = Long.valueOf(request.getParameter("id"));
-                    request.setAttribute("message", deleteRoom(request, id));
+                    request.setAttribute("message", deleteRoom(id));
                     break;
             }
 
@@ -45,8 +44,8 @@ public class AdminRoomsListCommand implements ICommand {
         return JspPageName.ADMIN_ROOMS;
     }
 
-    private Map<String, String> addRoom(HttpServletRequest request, Long num, float price, String discription) {
-        Rooms rooms = new Rooms(num, price, discription);
+    private Map<String, String> addRoom(Long num, float price, String description) {
+        Rooms rooms = new Rooms(num, price, description);
         try {
             return roomsDAO.addRoom(rooms);
         } catch (DaoException e) {
@@ -54,20 +53,10 @@ public class AdminRoomsListCommand implements ICommand {
         }
     }
 
-    private Map<String, String> deleteRoom(HttpServletRequest request, Long id) {
+    private Map<String, String> deleteRoom(Long id) {
         try {
             ordersDAO.cancelOrders(id);
             return roomsDAO.deleteRoom(id);
-        } catch (DaoException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Map<String, String> editRoom(HttpServletRequest request, Long id, Long num, float price, String discription) {
-        Rooms rooms = new Rooms(id, num, price, discription);
-        try {
-            ordersDAO.cancelOrders(id);
-            return roomsDAO.updateRoom(rooms);
         } catch (DaoException e) {
             throw new RuntimeException(e);
         }

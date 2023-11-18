@@ -27,6 +27,7 @@ public class JdbcOrdersDAO implements OrdersDAO {
     private static final String FIND_ALL_ORDERS = "SELECT * FROM orders";
     private static final String CANCEL_BANNED_USER_ORDER = "UPDATE orders SET order_status = ? WHERE user_id_user = ?";
 
+    private static final String FIND_USERS_ORDERS = "SELECT * FROM orders WHERE user_id_user = ?";
     public static OrdersDAO getInstance() {
         if(instance == null) {
             synchronized (RoomsDAO.class) {
@@ -137,15 +138,45 @@ public class JdbcOrdersDAO implements OrdersDAO {
     }
 
     @Override
-    public Map<String, String> updateOrderStatus(Orders orders) throws DaoException {
+    public List<Orders> findAllOrdersOfUser(Long id) throws DaoException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        List<Orders> orders;
+        try {
+            lock.writeLock().lock();
+            conn = connectionPool.getConnection();
+            statement = conn.prepareStatement(FIND_USERS_ORDERS);
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            orders = ordersExtractor.extractData(resultSet);
+        } catch (SQLException e) {
+            throw new DaoException("error in add");
+        } finally {
+            lock.writeLock().unlock();
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    throw new DaoException("fuck");
+                }
+            }
+            if (conn != null) {
+                connectionPool.releaseConnection(conn);
+            }
+        }
+        return orders;
+    }
+
+    @Override
+    public Map<String, String> updateOrderStatus(Long ID, OrderStatus status) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
             lock.writeLock().lock();
             conn = connectionPool.getConnection();
             statement = conn.prepareStatement(UPDATE_ORDER_STATUS);
-            statement.setString(1, orders.getStatus().toString());
-            statement.setLong(2, orders.getId());
+            statement.setString(1, status.toString());
+            statement.setLong(2, ID);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException("error in add");

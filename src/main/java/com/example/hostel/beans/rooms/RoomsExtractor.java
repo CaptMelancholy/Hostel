@@ -1,7 +1,5 @@
 package com.example.hostel.beans.rooms;
 
-import com.example.hostel.beans.user.User;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,7 +13,7 @@ public class RoomsExtractor {
             room.setId(resultSet.getLong("id_rooms"));
             room.setNum(resultSet.getLong("rooms_guest_amount"));
             room.setPrice(resultSet.getFloat("rooms_price"));
-            room.setDiscription(resultSet.getString("rooms_discription"));
+            room.setDescription(resultSet.getString("rooms_discription"));
             room.setDeleted(resultSet.getBoolean("rooms_deleted"));
             rooms.add(room);
         }
@@ -28,7 +26,7 @@ public class RoomsExtractor {
         room.setId(resultSet.getLong("id_rooms"));
         room.setNum(resultSet.getLong("rooms_guest_amount"));
         room.setPrice(resultSet.getFloat("rooms_price"));
-        room.setDiscription(resultSet.getString("rooms_discription"));
+        room.setDescription(resultSet.getString("rooms_discription"));
         room.setDeleted(resultSet.getBoolean("rooms_deleted"));
         return room;
     }

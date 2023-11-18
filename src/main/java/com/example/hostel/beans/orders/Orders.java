@@ -1,8 +1,5 @@
 package com.example.hostel.beans.orders;
 
-import com.example.hostel.beans.rooms.Rooms;
-
-import java.sql.Time;
 import java.util.Date;
 
 public class Orders {
@@ -23,7 +20,7 @@ public class Orders {
 
     public Orders() {}
 
-    public Orders(Long roomID, Long userID, OrderTypes type, String name, String surname, String phoneNumber, String email, Date dateBegin, Date dateEnd, Boolean orderPaid, Date date) {
+    public Orders(Long roomID, Long userID, OrderTypes type, String name, String surname, String phoneNumber, String email, Date date, Boolean orderPaid, Date dateBegin, Date dateEnd ) {
         this.roomID = roomID;
         this.userID = userID;
         this.type = type;

@@ -14,7 +14,7 @@ public class JspPageName {
     public static final String ADMIN_ROOMS = "WEB-INF/jsp/admin_rooms.jsp";
 
     public static final String EDIT_ROOM = "WEB-INF/jsp/admin_room_edit.jsp";
-    public static final String USER_BOOK = "WEB-INF/jsp/book.jsp";
-    public static final String USER_ORDERS = "WEB-INF/jsp/orders.jsp";
+    public static final String USER_ORDERS_LIST = "WEB-INF/jsp/ordersList.jsp";
+    public static final String USER_ORDERS = "WEB-INF/jsp/order.jsp";
     public static final String ERROR_PAGE = "WEB-INF/jsp/error.jsp";
 }

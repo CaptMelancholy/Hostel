@@ -35,6 +35,7 @@ public class JdbcUserDAO implements UserDAO {
     private static final String SET_ADMIN = "UPDATE user SET user_role = ? WHERE user_login = ?";
     private static final String SET_DISCOUNT = "UPDATE user SET user_discount = ? WHERE user_login = ?";
     private static final String FIND_ALL_USERS = "SELECT * FROM user";
+
     public static UserDAO getInstance() {
         if (instance == null) {
             synchronized (UserDAO.class) {
@@ -46,13 +47,9 @@ public class JdbcUserDAO implements UserDAO {
         return instance;
     }
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
-    @Override
-    public Optional<User> findUser(Long id) throws DaoException {
-        return Optional.empty();
-    }
 
     @Override
-    public Optional<User> findUserByLoginAndPass(String login, String password) throws DaoException {
+    public Optional<User> findUserByLoginAndPass(String login, String password) {
         Optional<User> user;
         Connection conn = null;
         PreparedStatement statement = null;
@@ -83,7 +80,7 @@ public class JdbcUserDAO implements UserDAO {
     }
 
     @Override
-    public User findUserByLogin(String login) throws DaoException {
+    public User findUserByLogin(String login) {
         User user;
         Connection conn = null;
         PreparedStatement statement = null;
@@ -240,11 +237,6 @@ public class JdbcUserDAO implements UserDAO {
         }
 
         return null;
-    }
-
-    @Override
-    public void deleteUser(User user) throws DaoException {
-
     }
 
     @Override

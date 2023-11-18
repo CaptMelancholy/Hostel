@@ -4,23 +4,23 @@ public class Rooms {
     private Long id;
     private Long num;
     private float price;
-    private String discription;
+    private String description;
 
     private Boolean deleted = false;
 
     public Rooms() {}
 
-    public Rooms(Long num, float price, String discription) {
+    public Rooms(Long num, float price, String description) {
         this.num = num;
         this.price = price;
-        this.discription = discription;
+        this.description = description;
     }
 
-    public Rooms(Long id, Long num, float price, String discription) {
+    public Rooms(Long id, Long num, float price, String description) {
         this.id = id;
         this.num = num;
         this.price = price;
-        this.discription = discription;
+        this.description = description;
     }
 
     public Long getId() {
@@ -47,12 +47,12 @@ public class Rooms {
         this.price = price;
     }
 
-    public String getDiscription() {
-        return discription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDiscription(String discription) {
-        this.discription = discription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Boolean getDeleted() {

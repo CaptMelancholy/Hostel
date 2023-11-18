@@ -19,6 +19,15 @@
             padding: 0;
             box-sizing: border-box;
         }
+        input {
+            position: relative;
+        }
+        .custom-radio > input ~ label {
+            opacity: 0.5;
+        }
+        .custom-radio > input:checked ~ label {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>

@@ -10,8 +10,6 @@ import java.util.Optional;
 
 public interface UserDAO {
 
-    Optional<User> findUser(Long id) throws DaoException;
-
     /**
      * Find user by login and password
      *
@@ -37,13 +35,6 @@ public interface UserDAO {
     Map<String, String> setUserBan(User user) throws DaoException;
     Map<String, String> setUserAdmin(User user) throws DaoException;
     Map<String, String> setUserDiscount(User user) throws DaoException;
-    /**
-     * Delete user from database
-     *
-     * @param user user to delete
-     * @throws DaoException throws when there is some errors during dao method execution
-     */
-    void deleteUser(User user) throws DaoException;
 
     /**
      * Find all users in database

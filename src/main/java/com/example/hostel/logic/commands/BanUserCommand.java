@@ -9,7 +9,6 @@ import com.example.hostel.exceptions.DaoException;
 import com.example.hostel.logic.ICommand;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 public class BanUserCommand implements ICommand {
     private final UserDAO userDAO = JdbcUserDAO.getInstance();
@@ -24,12 +23,4 @@ public class BanUserCommand implements ICommand {
         return JspPageName.ADMIN_PAGE;
     }
 
-    private List<User> findUsers() throws CommandException {
-        List<User> users;
-        try {
-            return users = userDAO.findAllUsers();
-        } catch (DaoException e) {
-            throw new CommandException(e.getMessage());
-        }
-    }
 }

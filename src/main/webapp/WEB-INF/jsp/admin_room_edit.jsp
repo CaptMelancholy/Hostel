@@ -33,7 +33,7 @@
                         <label for="discription" class="col-5 col-form-label">Discription</label>
                         <div class="col-7">
                             <textarea id="discription" name="discription" cols="40" rows="5" class="form-control"
-                                      required="required">${room.discription}</textarea>
+                                      required="required">${room.description}</textarea>
                         </div>
                     </div>
                     <div class="form-group row">

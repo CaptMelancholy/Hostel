@@ -8,12 +8,9 @@ import com.example.hostel.dao.impl.JdbcOrdersDAO;
 import com.example.hostel.dao.impl.JdbcRoomsDAO;
 import com.example.hostel.exceptions.CommandException;
 import com.example.hostel.exceptions.DaoException;
-import com.example.hostel.logic.CommandHelper;
-import com.example.hostel.logic.CommandName;
 import com.example.hostel.logic.ICommand;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 
 public class AdminRoomEditCommand implements ICommand {
@@ -27,16 +24,16 @@ public class AdminRoomEditCommand implements ICommand {
         if(!request.getMethod().equals("GET") && subCommand != null) {
             Long num = Long.valueOf(request.getParameter("num"));
             float price = Float.parseFloat(request.getParameter("price"));
-            String discription = request.getParameter("discription");
-            request.setAttribute("message", editRoom(request, id, num, price, discription));
+            String description = request.getParameter("description");
+            request.setAttribute("message", editRoom(id, num, price, description));
             return JspPageName.MAIN_PAGE;
         }
         request.setAttribute(ROOM_ATTRIBUTE, findRoomByID(id));
         return JspPageName.EDIT_ROOM;
     }
 
-    private Map<String, String> editRoom(HttpServletRequest request, Long id, Long num, float price, String discription) {
-        Rooms rooms = new Rooms(id, num, price, discription);
+    private Map<String, String> editRoom(Long id, Long num, float price, String description) {
+        Rooms rooms = new Rooms(id, num, price, description);
         try {
             ordersDAO.cancelOrders(id);
             return roomsDAO.updateRoom(rooms);

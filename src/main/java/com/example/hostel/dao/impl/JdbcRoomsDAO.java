@@ -10,10 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -27,6 +25,7 @@ public class JdbcRoomsDAO implements RoomsDAO {
     private static final String DELETE_ROOM = "UPDATE rooms SET rooms_deleted = ? WHERE id_rooms = ?";
 
     private static final String FIND_BY_ID = "SELECT * FROM rooms WHERE id_rooms = ?";
+
 
     private static final String UPDATE_ROOM = "UPDATE rooms SET rooms_guest_amount = ?, rooms_price = ?, rooms_discription = ?, rooms_deleted = ? WHERE id_rooms = ?";
 
@@ -83,7 +82,7 @@ public class JdbcRoomsDAO implements RoomsDAO {
             statement = conn.prepareStatement(UPDATE_ROOM);
             statement.setLong(1, room.getNum());
             statement.setFloat(2, room.getPrice());
-            statement.setString(3, room.getDiscription());
+            statement.setString(3, room.getDescription());
             statement.setBoolean(4, room.getDeleted());
             statement.setLong(5, room.getId());
             statement.executeUpdate();
@@ -116,7 +115,7 @@ public class JdbcRoomsDAO implements RoomsDAO {
             statement = conn.prepareStatement(ADD_ROOM);
             statement.setLong(1, room.getNum());
             statement.setFloat(2, room.getPrice());
-            statement.setString(3, room.getDiscription());
+            statement.setString(3, room.getDescription());
             statement.setBoolean(4, room.getDeleted());
             statement.executeUpdate();
         } catch (SQLException e) {

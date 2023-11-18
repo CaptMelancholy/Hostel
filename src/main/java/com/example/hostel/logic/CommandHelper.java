@@ -18,7 +18,7 @@ public class CommandHelper {
          commandPull.put(CommandName.UNKNOWN_COMMAND, new UnknownCommand());
          commandPull.put(CommandName.AUTH_PAGE, new AuthorizationPageCommand());
          commandPull.put(CommandName.REG_COMMAND, new RegistrationPageCommand());
-         commandPull.put(CommandName.SINGOUT_COMMAND, new SingOutCommand());
+         commandPull.put(CommandName.SING_OUT_COMMAND, new SingOutCommand());
          commandPull.put(CommandName.FORBIDDEN_COMMAND, new ForbiddenCommand());
          commandPull.put(CommandName.ADMIN_PAGE, new AdminPanelCommand());
          commandPull.put(CommandName.BAN_COMMAND, new BanCommand());
@@ -26,15 +26,14 @@ public class CommandHelper {
          commandPull.put(CommandName.ADMIN_ADD_ROOM, new AdminRoomsListCommand());
          commandPull.put(CommandName.ADMIN_ORDERS, new AdminOrdersCommand());
          commandPull.put(CommandName.USER_BOOK, new UserBookCommand());
-         commandPull.put(CommandName.USER_ORDERLIST, new UserOrdersListCommand());
+         commandPull.put(CommandName.USER_ORDER_LIST, new UserOrdersListCommand());
          commandPull.put(CommandName.ADMIN_EDIT_ROOM, new AdminRoomEditCommand());
+         commandPull.put(CommandName.USER_ORDER_CREATE, new UserOrderCommand());
     }
     public static CommandHelper getInstance() {
         return instance;
     }
-    public Map<CommandName, ICommand> getCommandPull() {
-        return commandPull;
-    }
+
     public ICommand getCommand(String commandName) {
         CommandName name = CommandName.valueOf(commandName.toUpperCase());
         ICommand command;

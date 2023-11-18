@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: Your Phycologyst
-  Date: 16.11.2023
-  Time: 20:09
+  Date: 18.11.2023
+  Time: 17:15
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
@@ -11,14 +11,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="orders" scope="request" type="java.util.List"/>
 <c:choose>
-    <c:when test="${ sessionScope.role eq null || sessionScope.role eq 'client'}">
+    <c:when test="${ sessionScope.role eq null }">
         <% response.sendRedirect("welcome?command=FORBIDDEN_COMMAND"); %>
     </c:when>
     <c:otherwise>
         <tags:header/>
-        <tags:links pageTitle="ADMIN-ROOMS-EDIT">
+        <tags:links pageTitle="BOOK">
             <hr/>
-            <h1>USERS ORDERS</h1>
+            <h1>MY ORDERS</h1>
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -62,22 +62,21 @@
                         <td>${order.dateBegin}</td>
                         <td>${order.dateEnd}</td>
                         <td class="d-flex justify-around">
-                            <form action="welcome" method="POST">
-                                <input type="hidden" name="command" value="ADMIN_ORDERS" />
-                                <input type="hidden" name="subCommand" value="APPROVE_ORDER" />
-                                <input type="hidden" name="id" value="${order.id}" />
-                                <button type="submit" class="btn btn-primary">
-                                    APPROVE
-                                </button>
-                            </form>
-                            <form action="welcome" method="POST">
-                                <input type="hidden" name="command" value="ADMIN_ORDERS" />
-                                <input type="hidden" name="subCommand" value="REJECT_ORDER" />
-                                <input type="hidden" name="id" value="${order.id}" />
-                                <button type="submit" class="btn btn-danger">
-                                    REJECT
-                                </button>
-                            </form>
+                            <c:choose>
+                                <c:when test="${ order.status == 'CANCELED' }">
+                                    YOUR ORDER CANCELED
+                                </c:when>
+                                <c:otherwise>
+                                    <form action="welcome" method="POST">
+                                        <input type="hidden" name="command" value="USER_ORDER_LIST" />
+                                        <input type="hidden" name="orderID" value="${order.id}" />
+                                        <button type="submit" class="btn btn-primary">
+                                            CANCEL
+                                        </button>
+                                    </form>
+                                </c:otherwise>
+                            </c:choose>
+
                         </td>
                     </tr>
                 </c:forEach>

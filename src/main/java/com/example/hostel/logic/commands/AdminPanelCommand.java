@@ -2,7 +2,9 @@ package com.example.hostel.logic.commands;
 
 import com.example.hostel.beans.user.User;
 import com.example.hostel.controller.JspPageName;
+import com.example.hostel.dao.OrdersDAO;
 import com.example.hostel.dao.UserDAO;
+import com.example.hostel.dao.impl.JdbcOrdersDAO;
 import com.example.hostel.dao.impl.JdbcUserDAO;
 import com.example.hostel.exceptions.CommandException;
 import com.example.hostel.exceptions.DaoException;
@@ -14,6 +16,7 @@ import java.util.List;
 public class AdminPanelCommand implements ICommand {
 
     private final UserDAO userDAO = JdbcUserDAO.getInstance();
+    private final OrdersDAO ordersDAO = JdbcOrdersDAO.getInstance();
     private static final String USERS_ATTRIBUTE = "users";
 
     @Override
@@ -24,6 +27,7 @@ public class AdminPanelCommand implements ICommand {
             User user = userDAO.findUserByLogin(login);
             switch (subCommand) {
                 case "BAN_USER_COMMAND":
+                    ordersDAO.cancelOrdersFromBannedUser(user.getId());
                     request.setAttribute("message", userDAO.setUserBan(user));
                     break;
                 case "SET_DISCOUNT_COMMAND":

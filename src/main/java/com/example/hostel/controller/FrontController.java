@@ -6,6 +6,7 @@ import com.example.hostel.logic.CommandHelper;
 import com.example.hostel.logic.ICommand;
 
 import java.io.*;
+import java.text.ParseException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -30,7 +31,7 @@ public class FrontController extends HttpServlet {
      * Catch get requests
      *
      * @param request  http request
-     * @param response http respouse
+     * @param response http response
      * @throws ServletException
      * @throws IOException
      */
@@ -63,6 +64,8 @@ public class FrontController extends HttpServlet {
             } catch (CommandException | DaoException e) {
                 request.setAttribute("message", e.getMessage());
                 page = JspPageName.ERROR_PAGE;
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
         } else if (request.getParameter("sessionLocale") != null) {
             try {
@@ -70,6 +73,8 @@ public class FrontController extends HttpServlet {
             } catch (CommandException | DaoException e) {
                 request.setAttribute("message", e.getMessage());
                 page = JspPageName.ERROR_PAGE;
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
         } else {
             page = JspPageName.ERROR_PAGE;
@@ -78,7 +83,7 @@ public class FrontController extends HttpServlet {
         if (dispatcher != null) {
             dispatcher.forward(request, response);
         } else {
-            errorMessageDireclyFromresponse(response);
+            errorMessageDirectlyFromResponse(response);
         }
     }
 
@@ -89,7 +94,7 @@ public class FrontController extends HttpServlet {
      * @param response
      * @throws IOException
      */
-    private void errorMessageDireclyFromresponse(HttpServletResponse response) throws IOException {
+    private void errorMessageDirectlyFromResponse(HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
         response.getWriter().println("E R R O R");
     }

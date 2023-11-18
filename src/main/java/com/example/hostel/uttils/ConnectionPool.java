@@ -14,7 +14,7 @@ public class ConnectionPool {
     /**
      * Instance of connection pool
      */
-    private static ConnectionPool instance = null;
+    private static volatile ConnectionPool instance = null;
     /**
      * url of database
      */

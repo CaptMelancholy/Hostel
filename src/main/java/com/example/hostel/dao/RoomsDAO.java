@@ -3,10 +3,8 @@ package com.example.hostel.dao;
 import com.example.hostel.beans.rooms.Rooms;
 import com.example.hostel.exceptions.DaoException;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface RoomsDAO {
 
