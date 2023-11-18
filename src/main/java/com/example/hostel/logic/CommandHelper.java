@@ -11,6 +11,8 @@ public class CommandHelper {
 
     private final Map<CommandName, ICommand> commandPull = new HashMap<>();
 
+
+
     public CommandHelper() {
          commandPull.put(CommandName.MAIN_PAGE, new MainPageCommand());
          commandPull.put(CommandName.UNKNOWN_COMMAND, new UnknownCommand());
@@ -21,11 +23,18 @@ public class CommandHelper {
          commandPull.put(CommandName.ADMIN_PAGE, new AdminPanelCommand());
          commandPull.put(CommandName.BAN_COMMAND, new BanCommand());
          commandPull.put(CommandName.BAN_USER_COMMAND, new BanUserCommand());
+         commandPull.put(CommandName.ADMIN_ADD_ROOM, new AdminRoomsListCommand());
+         commandPull.put(CommandName.ADMIN_ORDERS, new AdminOrdersCommand());
+         commandPull.put(CommandName.USER_BOOK, new UserBookCommand());
+         commandPull.put(CommandName.USER_ORDERLIST, new UserOrdersListCommand());
+         commandPull.put(CommandName.ADMIN_EDIT_ROOM, new AdminRoomEditCommand());
     }
     public static CommandHelper getInstance() {
         return instance;
     }
-
+    public Map<CommandName, ICommand> getCommandPull() {
+        return commandPull;
+    }
     public ICommand getCommand(String commandName) {
         CommandName name = CommandName.valueOf(commandName.toUpperCase());
         ICommand command;

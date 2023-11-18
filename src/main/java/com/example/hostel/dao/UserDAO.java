@@ -21,6 +21,7 @@ public interface UserDAO {
      * @throws DaoException throws when there is some errors during dao method execution
      */
     Optional<User> findUserByLoginAndPass(String login, String password) throws DaoException;
+
     User findUserByLogin(String login) throws  DaoException;
 
     /**

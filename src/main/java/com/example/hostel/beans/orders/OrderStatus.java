@@ -1,8 +1,8 @@
 package com.example.hostel.beans.orders;
 
 public enum OrderStatus {
-    SENDED,
+    SENT,
     CANCELED,
-    APPROVED,
-    CHECKED
+    REJECTED,
+    APPROVED
 }

@@ -3,18 +3,23 @@ package com.example.hostel.beans.rooms;
 public class Rooms {
     private Long id;
     private Long num;
-    private String service;
     private float price;
-    private Boolean statusBooked;
     private String discription;
+
+    private Boolean deleted = false;
 
     public Rooms() {}
 
-    public Rooms(Long num, String service, float price, Boolean statusBooked, String discription) {
+    public Rooms(Long num, float price, String discription) {
         this.num = num;
-        this.service = service;
         this.price = price;
-        this.statusBooked = statusBooked;
+        this.discription = discription;
+    }
+
+    public Rooms(Long id, Long num, float price, String discription) {
+        this.id = id;
+        this.num = num;
+        this.price = price;
         this.discription = discription;
     }
 
@@ -34,14 +39,6 @@ public class Rooms {
         this.num = num;
     }
 
-    public String getService() {
-        return service;
-    }
-
-    public void setService(String service) {
-        this.service = service;
-    }
-
     public float getPrice() {
         return price;
     }
@@ -50,19 +47,19 @@ public class Rooms {
         this.price = price;
     }
 
-    public Boolean getStatusBooked() {
-        return statusBooked;
-    }
-
-    public void setStatusBooked(Boolean statusBooked) {
-        this.statusBooked = statusBooked;
-    }
-
     public String getDiscription() {
         return discription;
     }
 
     public void setDiscription(String discription) {
         this.discription = discription;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

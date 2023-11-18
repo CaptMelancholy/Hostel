@@ -25,6 +25,7 @@ public class JdbcUserDAO implements UserDAO {
 
 
 
+
     private static final String ADD_USER = "INSERT INTO user (user_login, user_password, user_name, user_surname, user_role, user_discount, user_ban, user_email) VALUES (?,?,?,?,?,?,?,?)";
 
     private static final String FIND_USER_BY_LOGIN_PASSWORD = "SELECT * FROM user WHERE user_login = ? AND user_password = ?";

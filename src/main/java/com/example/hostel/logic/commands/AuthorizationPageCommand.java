@@ -44,6 +44,7 @@ public class AuthorizationPageCommand implements ICommand {
             }
 
             request.getSession().setAttribute("name", user.getUserName() + " " + user.getUserSurname());
+            request.getSession().setAttribute("id", user.getId());
         }
         return null;
     }

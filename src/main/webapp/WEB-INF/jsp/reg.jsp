@@ -23,7 +23,7 @@
 <%--        <input name="surname" id="surname" class="saveFiled"></div>--%>
 <%--    <button type="submit" class="btn btn-send">Send</button>--%>
 <%--</form>--%>
-<tags:header></tags:header>
+<tags:header />
 <div class="mt-3 p-5">
     <form name="reg" action="welcome" method="POST" class="p-2 border rounded border-dark">
         <input type="hidden" name="command" value="REG_COMMAND" />

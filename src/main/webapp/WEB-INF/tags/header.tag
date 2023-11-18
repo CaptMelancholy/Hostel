@@ -20,6 +20,7 @@
                    <c:choose>
                        <c:when test="${ sessionScope.role eq 'admin' }">
                            <a class="nav-link" href="${pageContext.request.contextPath}/welcome?command=ADMIN_PAGE">Admin Panel</a>
+                           <a href="${pageContext.request.contextPath}/welcome?command=ADMIN_ADD_ROOM" class="nav-link">Admin Rooms</a>
                        </c:when>
                    </c:choose>
 
