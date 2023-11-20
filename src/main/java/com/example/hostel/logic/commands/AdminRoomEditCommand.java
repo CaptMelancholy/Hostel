@@ -11,7 +11,6 @@ import com.example.hostel.exceptions.DaoException;
 import com.example.hostel.logic.ICommand;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 public class AdminRoomEditCommand implements ICommand {
     private final RoomsDAO roomsDAO = JdbcRoomsDAO.getInstance();
@@ -25,18 +24,18 @@ public class AdminRoomEditCommand implements ICommand {
             Long num = Long.valueOf(request.getParameter("num"));
             float price = Float.parseFloat(request.getParameter("price"));
             String description = request.getParameter("description");
-            request.setAttribute("message", editRoom(id, num, price, description));
+            editRoom(id, num, price, description);
             return JspPageName.MAIN_PAGE;
         }
         request.setAttribute(ROOM_ATTRIBUTE, findRoomByID(id));
         return JspPageName.EDIT_ROOM;
     }
 
-    private Map<String, String> editRoom(Long id, Long num, float price, String description) {
+    private void editRoom(Long id, Long num, float price, String description) {
         Rooms rooms = new Rooms(id, num, price, description);
         try {
             ordersDAO.cancelOrders(id);
-            return roomsDAO.updateRoom(rooms);
+            roomsDAO.updateRoom(rooms);
         } catch (DaoException e) {
             throw new RuntimeException(e);
         }

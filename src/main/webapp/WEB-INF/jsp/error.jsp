@@ -1,6 +1,10 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
+<fmt:setLocale value="${sessionScope.lang}" />
+<fmt:setBundle basename="messages" />
 <tags:links pageTitle="404">
+
 <style>.page_404{ padding:40px 0; background:#fff; font-family: 'Arvo', serif;
 }
 
@@ -37,10 +41,10 @@
 
                     <div class="contant_box_404">
                         <h3 class="h2">
-                            Look like you're lost
+                            <fmt:message key="ERROR_404"/>
                         </h3>
 
-                        <p>the page you are looking for not avaible!</p>
+                        <p><fmt:message key="ERROR_404_DIS"/></p>
                     </div>
                 </div>
             </div>

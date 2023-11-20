@@ -7,15 +7,23 @@ import com.example.hostel.dao.OrdersDAO;
 import com.example.hostel.dao.RoomsDAO;
 import com.example.hostel.exceptions.DaoException;
 import com.example.hostel.uttils.ConnectionPool;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.sql.*;
-import java.util.List;
-import java.util.Map;
+import java.sql.Date;
+import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+
+/**
+ * The JdbcOrdersDAO class implements the OrdersDAO interface and provides
+ * functionality to interact with the database for orders related operations.
+ */
 public class JdbcOrdersDAO implements OrdersDAO {
 
+    private static final Logger logger = Logger.getLogger(OrdersDAO.class);
     private static volatile OrdersDAO instance;
 
     private  final ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -41,7 +49,7 @@ public class JdbcOrdersDAO implements OrdersDAO {
 
 
     @Override
-    public Map<String, String> cancelOrders(Long id) throws DaoException {
+    public void cancelOrders(Long id) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -51,26 +59,28 @@ public class JdbcOrdersDAO implements OrdersDAO {
             statement.setString(1, OrderStatus.CANCELED.toString());
             statement.setLong(2, id);
             statement.executeUpdate();
+            logger.log(Level.INFO, "Orders Canceled");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.log(Level.ERROR, "Error in cancelOrders", e);
+            throw new DaoException("Error in order cancellation");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                    logger.log(Level.ERROR, "Error in cancelOrders", ex);
                 }
             }
             if (conn != null) {
                 connectionPool.releaseConnection(conn);
             }
         }
-        return null;
+
     }
 
     @Override
-    public Map<String, String> cancelOrdersFromBannedUser(Long id) throws DaoException {
+    public void cancelOrdersFromBannedUser(Long id) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -80,26 +90,27 @@ public class JdbcOrdersDAO implements OrdersDAO {
             statement.setString(1, OrderStatus.CANCELED.toString());
             statement.setLong(2, id);
             statement.executeUpdate();
+            logger.log(Level.INFO, "Success cancel orders from banned user " + id);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.log(Level.ERROR, "Error in cancelOrdersFromBannedUser", e);
+            throw new DaoException("Error in order cancellation of banned users");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                    logger.log(Level.ERROR, "Error in cancelOrdersFromBannedUser", ex);
                 }
             }
             if (conn != null) {
                 connectionPool.releaseConnection(conn);
             }
         }
-        return null;
     }
 
     @Override
-    public Map<String, String> addOrder(Orders orders) throws DaoException {
+    public void addOrder(Orders orders) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -119,22 +130,23 @@ public class JdbcOrdersDAO implements OrdersDAO {
             statement.setDate(11, new Date(orders.getDateBegin().getTime()));
             statement.setDate(12, new Date(orders.getDateEnd().getTime()));
             statement.executeUpdate();
+            logger.log(Level.INFO, "Success in adding order");
         } catch (SQLException e) {
-            throw new DaoException("error in add");
+            logger.log(Level.ERROR, "Error in addOrder", e);
+            throw new DaoException("Error in adding order");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in addOrder", e);
                 }
             }
             if (conn != null) {
                 connectionPool.releaseConnection(conn);
             }
         }
-        return null;
     }
 
     @Override
@@ -149,15 +161,17 @@ public class JdbcOrdersDAO implements OrdersDAO {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             orders = ordersExtractor.extractData(resultSet);
+            logger.log(Level.INFO, "Success in find all orders of user " + id);
         } catch (SQLException e) {
-            throw new DaoException("error in add");
+            logger.log(Level.ERROR, "Error in findAllOrdersOfUser", e);
+            throw new DaoException("Error in order finding all orders of user");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in findAllOrdersOfUser", e);
                 }
             }
             if (conn != null) {
@@ -168,7 +182,7 @@ public class JdbcOrdersDAO implements OrdersDAO {
     }
 
     @Override
-    public Map<String, String> updateOrderStatus(Long ID, OrderStatus status) throws DaoException {
+    public void updateOrderStatus(Long ID, OrderStatus status) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -178,22 +192,23 @@ public class JdbcOrdersDAO implements OrdersDAO {
             statement.setString(1, status.toString());
             statement.setLong(2, ID);
             statement.executeUpdate();
+            logger.log(Level.INFO, "Success in update order status " + ID);
         } catch (SQLException e) {
-            throw new DaoException("error in add");
+            logger.log(Level.ERROR, "Error in updateOrderStatus", e);
+            throw new DaoException("Error in update order statuses");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in updateOrderStatus", e);
                 }
             }
             if (conn != null) {
                 connectionPool.releaseConnection(conn);
             }
         }
-        return null;
     }
 
     @Override
@@ -207,15 +222,17 @@ public class JdbcOrdersDAO implements OrdersDAO {
             statement = conn.prepareStatement(FIND_ALL_ORDERS);
             ResultSet resultSet = statement.executeQuery();
             orders = ordersExtractor.extractData(resultSet);
+            logger.log(Level.INFO, "Success in find all orders");
         } catch (SQLException e) {
-            throw new DaoException("error in add");
+            logger.log(Level.ERROR, "Error in findAllOrders", e);
+            throw new DaoException("Error in order finding all orders");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in findAllOrders", e);
                 }
             }
             if (conn != null) {

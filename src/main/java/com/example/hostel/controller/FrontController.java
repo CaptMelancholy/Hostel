@@ -13,6 +13,10 @@ import javax.servlet.http.*;
 
 
 public class FrontController extends HttpServlet {
+    /**
+ * The FrontController class handles HTTP requests and routes them to appropriate commands.
+ */
+
     private static final long serialVersionUID = 1L;
     /**
      * Name of command parameter
@@ -28,12 +32,12 @@ public class FrontController extends HttpServlet {
     }
 
     /**
-     * Catch get requests
+     * Handles HTTP GET requests.
      *
-     * @param request  http request
-     * @param response http response
-     * @throws ServletException
-     * @throws IOException
+     * @param request  the HTTP request
+     * @param response the HTTP response
+     * @throws ServletException if there is a servlet exception
+     * @throws IOException      if there is an I/O exception
      */
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -41,17 +45,25 @@ public class FrontController extends HttpServlet {
     }
 
     /**
-     * Catch post requests
+     * Handles HTTP POST requests.
      *
-     * @param request  http request
-     * @param response http response
-     * @throws ServletException
-     * @throws IOException
+     * @param request  the HTTP request
+     * @param response the HTTP response
+     * @throws ServletException if there is a servlet exception
+     * @throws IOException      if there is an I/O exception
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         process(request, response);
     }
 
+    /**
+     * Processes the HTTP request and routes it to the appropriate command.
+     *
+     * @param request  the HTTP request
+     * @param response the HTTP response
+     * @throws ServletException if there is a servlet exception
+     * @throws IOException      if there is an I/O exception
+     */
     private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String commandName = request.getParameter(COMMAND_NAME);
         String page;
@@ -69,6 +81,7 @@ public class FrontController extends HttpServlet {
             }
         } else if (request.getParameter("sessionLocale") != null) {
             try {
+
                 page = CommandHelper.getInstance().getCommand("MAIN_PAGE").execute(request);
             } catch (CommandException | DaoException e) {
                 request.setAttribute("message", e.getMessage());
@@ -89,10 +102,10 @@ public class FrontController extends HttpServlet {
 
 
     /**
-     * Error response when no jsp to send
+     * Sends an error message directly in the HTTP response when no JSP page is available.
      *
-     * @param response
-     * @throws IOException
+     * @param response the HTTP response
+     * @throws IOException if there is an I/O exception
      */
     private void errorMessageDirectlyFromResponse(HttpServletResponse response) throws IOException {
         response.setContentType("text/html");

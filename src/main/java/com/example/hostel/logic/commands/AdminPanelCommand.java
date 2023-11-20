@@ -28,15 +28,15 @@ public class AdminPanelCommand implements ICommand {
             switch (subCommand) {
                 case "BAN_USER_COMMAND":
                     ordersDAO.cancelOrdersFromBannedUser(user.getId());
-                    request.setAttribute("message", userDAO.setUserBan(user));
+                    userDAO.setUserBan(user);
                     break;
                 case "SET_DISCOUNT_COMMAND":
                     float discount = (float) Math.round(Float.parseFloat(request.getParameter("discount")) * 100) / 100;
                     user.setDiscount(discount);
-                    request.setAttribute("message", userDAO.setUserDiscount(user));
+                    userDAO.setUserDiscount(user);
                     break;
                 case "SET_ADMIN_COMMAND":
-                    request.setAttribute("message", userDAO.setUserAdmin(user));
+                    userDAO.setUserAdmin(user);
                     break;
             }
 

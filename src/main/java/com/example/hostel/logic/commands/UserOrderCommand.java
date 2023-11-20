@@ -17,7 +17,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class UserOrderCommand implements ICommand {
     private final OrdersDAO ordersDAO = JdbcOrdersDAO.getInstance();
@@ -38,16 +37,16 @@ public class UserOrderCommand implements ICommand {
             Boolean paid = orderType == OrderTypes.PAID;
             Date startDate = format.parse(request.getParameter("startDate"));
             Date endDate = format.parse(request.getParameter("endDate"));
-            request.setAttribute("message", addOrder(new Orders(roomID, userID, orderType, name, surname, phoneNumber, email, date, paid, startDate, endDate)));
+            addOrder(new Orders(roomID, userID, orderType, name, surname, phoneNumber, email, date, paid, startDate, endDate));
         }
         request.setAttribute("rooms", findRooms());
         return JspPageName.USER_ORDERS;
     }
 
-    private Map<String, String> addOrder(Orders order)
+    private void addOrder(Orders order)
     {
         try {
-            return ordersDAO.addOrder(order);
+            ordersDAO.addOrder(order);
         } catch (DaoException e) {
             throw new RuntimeException(e);
         }

@@ -5,11 +5,13 @@
   Time: 17:15
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="orders" scope="request" type="java.util.List"/>
+<fmt:setLocale value="${sessionScope.lang}" />
+<fmt:setBundle basename="messages" />
 <c:choose>
     <c:when test="${ sessionScope.role eq null }">
         <% response.sendRedirect("welcome?command=FORBIDDEN_COMMAND"); %>
@@ -18,23 +20,23 @@
         <tags:header/>
         <tags:links pageTitle="BOOK">
             <hr/>
-            <h1>MY ORDERS</h1>
+            <h1><fmt:message key="user_orders.title"/></h1>
             <table class="table table-striped">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">ROOM</th>
-                    <th scope="col">ORDER TYPE</th>
-                    <th scope="col">NAME</th>
-                    <th scope="col">SURNAME</th>
-                    <th scope="col">PHONE NUMBER</th>
-                    <th scope="col">EMAIL</th>
-                    <th scope="col">STATUS</th>
-                    <th scope="col">DATE SENT</th>
-                    <th scope="col">PAY STATUS</th>
-                    <th scope="col">FROM</th>
-                    <th scope="col">TO</th>
-                    <th scope="col">ACTIONS</th>
+                    <th scope="col"><fmt:message key="user_orders.room"/></th>
+                    <th scope="col"><fmt:message key="user_orders.type"/></th>
+                    <th scope="col"><fmt:message key="user_orders.name"/></th>
+                    <th scope="col"><fmt:message key="user_orders.surname"/></th>
+                    <th scope="col"><fmt:message key="user_orders.phone"/></th>
+                    <th scope="col"><fmt:message key="user_orders.email"/></th>
+                    <th scope="col"><fmt:message key="user_orders.status"/></th>
+                    <th scope="col"><fmt:message key="user_orders.datesent"/></th>
+                    <th scope="col"><fmt:message key="user_orders.pay"/></th>
+                    <th scope="col"><fmt:message key="user_orders.from"/></th>
+                    <th scope="col"><fmt:message key="user_orders.to"/></th>
+                    <th scope="col"><fmt:message key="user_orders.action"/></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -52,10 +54,10 @@
                         <td>
                             <c:choose>
                                 <c:when test="${ order.orderPaid == true}">
-                                    YES
+                                    <fmt:message key="yes"/>
                                 </c:when>
                                 <c:otherwise>
-                                    NO
+                                    <fmt:message key="no"/>
                                 </c:otherwise>
                             </c:choose>
                         </td>
@@ -64,14 +66,14 @@
                         <td class="d-flex justify-around">
                             <c:choose>
                                 <c:when test="${ order.status == 'CANCELED' }">
-                                    YOUR ORDER CANCELED
+                                    <fmt:message key="orders_status_message"/>
                                 </c:when>
                                 <c:otherwise>
                                     <form action="welcome" method="POST">
                                         <input type="hidden" name="command" value="USER_ORDER_LIST" />
                                         <input type="hidden" name="orderID" value="${order.id}" />
                                         <button type="submit" class="btn btn-primary">
-                                            CANCEL
+                                            <fmt:message key="user_orders.action_cancel"/>
                                         </button>
                                     </form>
                                 </c:otherwise>

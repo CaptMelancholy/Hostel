@@ -11,7 +11,6 @@ import com.example.hostel.logic.ICommand;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 public class AdminOrdersCommand implements ICommand {
     private final OrdersDAO ordersDAO = JdbcOrdersDAO.getInstance();
@@ -23,11 +22,11 @@ public class AdminOrdersCommand implements ICommand {
             Long id = Long.valueOf(request.getParameter("id"));
             switch (subCommand) {
                 case "APPROVE_ORDER":
-                    request.setAttribute("message", changeOrderStatus(id, OrderStatus.APPROVED));
+                    changeOrderStatus(id, OrderStatus.APPROVED);
                     break;
 
                 case "REJECT_ORDER":
-                    request.setAttribute("message", changeOrderStatus(id, OrderStatus.REJECTED));
+                    changeOrderStatus(id, OrderStatus.REJECTED);
                     break;
             }
         }
@@ -35,9 +34,9 @@ public class AdminOrdersCommand implements ICommand {
         return JspPageName.ADMIN_ORDERS;
     }
 
-    private Map<String, String> changeOrderStatus(Long orderID, OrderStatus status) {
+    private void changeOrderStatus(Long orderID, OrderStatus status) {
         try {
-            return ordersDAO.updateOrderStatus(orderID, status);
+            ordersDAO.updateOrderStatus(orderID, status);
         } catch (DaoException e) {
             throw new RuntimeException(e);
         }

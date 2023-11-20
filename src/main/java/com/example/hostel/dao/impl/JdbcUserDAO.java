@@ -2,24 +2,29 @@ package com.example.hostel.dao.impl;
 
 import com.example.hostel.beans.user.User;
 import com.example.hostel.beans.user.UserExtractor;
+import com.example.hostel.dao.RoomsDAO;
 import com.example.hostel.dao.UserDAO;
 import com.example.hostel.exceptions.DaoException;
 import com.example.hostel.uttils.ConnectionPool;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpSession;
 import java.sql.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+/**
+ * The JdbcUserDAO class implements the UserDAO interface and provides
+ * functionality to interact with the database for orders related operations.
+ */
 
 public class JdbcUserDAO implements UserDAO {
     private static volatile UserDAO instance;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    /**
-     * UsersExtractor
-     */
+
+    private static final Logger logger = Logger.getLogger(RoomsDAO.class);
     private final UserExtractor userExtractor = new UserExtractor();
 
 
@@ -49,7 +54,7 @@ public class JdbcUserDAO implements UserDAO {
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     @Override
-    public Optional<User> findUserByLoginAndPass(String login, String password) {
+    public Optional<User> findUserByLoginAndPass(String login, String password) throws DaoException {
         Optional<User> user;
         Connection conn = null;
         PreparedStatement statement = null;
@@ -61,15 +66,17 @@ public class JdbcUserDAO implements UserDAO {
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
             user = userExtractor.extractData(resultSet).stream().findAny();
+            logger.log(Level.INFO, "Success in finding user by login and password");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.log(Level.ERROR, "Error in findUserByLoginAndPass", e);
+            throw new DaoException("Error in finding user by login and password");
         } finally {
             lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in findUserByLoginAndPass", e);
                 }
             }
             if (conn != null) {
@@ -80,7 +87,7 @@ public class JdbcUserDAO implements UserDAO {
     }
 
     @Override
-    public User findUserByLogin(String login) {
+    public User findUserByLogin(String login) throws DaoException {
         User user;
         Connection conn = null;
         PreparedStatement statement = null;
@@ -91,15 +98,17 @@ public class JdbcUserDAO implements UserDAO {
             statement.setString(1, login);
             ResultSet resultSet = statement.executeQuery();
             user = userExtractor.extractDataOnce(resultSet);
+            logger.log(Level.INFO, "Success in finding user by login");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.log(Level.ERROR, "Error in findUserByLogin", e);
+            throw new DaoException("Error in finding user by login");
         } finally {
             lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in findUserByLogin", e);
                 }
             }
             if (conn != null) {
@@ -113,29 +122,46 @@ public class JdbcUserDAO implements UserDAO {
     public Map<String, String> addUser(User user, HttpSession session) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
+        Map<String, String> messages = new HashMap<>();
+        Object lang = session.getAttribute("lang");
+        if (lang == null) {
+            lang = "en";
+        }
+        Locale locale = new Locale(lang.toString());
+        ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
         try {
-            lock.writeLock().lock();
-            conn = connectionPool.getConnection();
-            statement = conn.prepareStatement(ADD_USER);
-            statement.setString(1, user.getLogin());
-            statement.setString(2, user.getPassword());
-            statement.setString(3, user.getUserName());
-            statement.setString(4, user.getUserSurname());
-            statement.setBoolean(5, user.getAdminRole());
-            statement.setFloat(6, user.getDiscount());
-            statement.setBoolean(7, user.getBanStatus());
-            statement.setString(8, user.getEmail());
-            statement.executeUpdate();
+            User userToFind = findUserByLogin(user.getLogin());
+            if (userToFind != null) {
+                lock.writeLock().lock();
+                conn = connectionPool.getConnection();
+                statement = conn.prepareStatement(ADD_USER);
+                statement.setString(1, user.getLogin());
+                statement.setString(2, user.getPassword());
+                statement.setString(3, user.getUserName());
+                statement.setString(4, user.getUserSurname());
+                statement.setBoolean(5, user.getAdminRole());
+                statement.setFloat(6, user.getDiscount());
+                statement.setBoolean(7, user.getBanStatus());
+                statement.setString(8, user.getEmail());
+                statement.executeUpdate();
+                logger.log(Level.INFO, "Success in user adding");
+                messages.put("success", rb.getString("REGISTRATION_SUCCESS"));
+            } else {
+                logger.log(Level.ERROR, "Error in adding user. User exists");
+                messages.put("error", rb.getString("REGISTRATION_ERROR_LOGIN"));
+            }
+
 
         } catch (SQLException e) {
-            throw new DaoException("error in add");
+            logger.log(Level.ERROR, "Error in addUser", e);
+            throw new DaoException("Error in adding user");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in addUser", e);
                 }
             }
             if (conn != null) {
@@ -143,11 +169,11 @@ public class JdbcUserDAO implements UserDAO {
             }
         }
 
-        return null;
+        return messages;
     }
 
     @Override
-    public Map<String, String> setUserBan(User user) throws DaoException {
+    public void setUserBan(User user) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -157,28 +183,27 @@ public class JdbcUserDAO implements UserDAO {
             statement.setBoolean(1, !user.getBanStatus());
             statement.setString(2, user.getLogin());
             statement.executeUpdate();
-
+            logger.log(Level.INFO, "Success in setting user ban");
         } catch (SQLException e) {
-            throw new DaoException("error in add");
+            logger.log(Level.ERROR, "Error in setUserBan", e);
+            throw new DaoException("Error in setting user ban");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in setUserBan", e);
                 }
             }
             if (conn != null) {
                 connectionPool.releaseConnection(conn);
             }
         }
-
-        return null;
     }
 
     @Override
-    public Map<String, String> setUserAdmin(User user) throws DaoException {
+    public void setUserAdmin(User user) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -188,28 +213,27 @@ public class JdbcUserDAO implements UserDAO {
             statement.setBoolean(1, !user.getAdminRole());
             statement.setString(2, user.getLogin());
             statement.executeUpdate();
-
+            logger.log(Level.INFO, "Success in setting user admin");
         } catch (SQLException e) {
-            throw new DaoException("error in add");
+            logger.log(Level.ERROR, "Error in setUserAdmin", e);
+            throw new DaoException("Error in setting user admin");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in setUserAdmin", e);
                 }
             }
             if (conn != null) {
                 connectionPool.releaseConnection(conn);
             }
         }
-
-        return null;
     }
 
     @Override
-    public Map<String, String> setUserDiscount(User user) throws DaoException {
+    public void setUserDiscount(User user) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -219,24 +243,23 @@ public class JdbcUserDAO implements UserDAO {
             statement.setFloat(1, user.getDiscount());
             statement.setString(2, user.getLogin());
             statement.executeUpdate();
-
+            logger.log(Level.INFO, "Success in setting user discount");
         } catch (SQLException e) {
-            throw new DaoException("error in add");
+            logger.log(Level.ERROR, "Error in setUserDiscount", e);
+            throw new DaoException("Error in setting user discount");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in setUserDiscount", e);
                 }
             }
             if (conn != null) {
                 connectionPool.releaseConnection(conn);
             }
         }
-
-        return null;
     }
 
     @Override
@@ -250,16 +273,17 @@ public class JdbcUserDAO implements UserDAO {
             statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(FIND_ALL_USERS);
             users = userExtractor.extractData(resultSet);
-
+            logger.log(Level.INFO, "Success in finding all users");
         } catch (SQLException e) {
-            throw new DaoException("Error");
+            logger.log(Level.ERROR, "Error in findAllUsers", e);
+            throw new DaoException("Error in finding all users");
         } finally {
             lock.readLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in findAllUsers", e);
                 }
             }
             if (conn != null) {

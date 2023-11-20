@@ -5,10 +5,12 @@
   Time: 20:09
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<fmt:setLocale value="${sessionScope.lang}" />
+<fmt:setBundle basename="messages" />
 <jsp:useBean id="orders" scope="request" type="java.util.List"/>
 <c:choose>
     <c:when test="${ sessionScope.role eq null || sessionScope.role eq 'client'}">
@@ -18,23 +20,23 @@
         <tags:header/>
         <tags:links pageTitle="ADMIN-ROOMS-EDIT">
             <hr/>
-            <h1>USERS ORDERS</h1>
+            <h1><fmt:message key="admin_orders.title"/></h1>
             <table class="table table-striped">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">ROOM</th>
-                    <th scope="col">ORDER TYPE</th>
-                    <th scope="col">NAME</th>
-                    <th scope="col">SURNAME</th>
-                    <th scope="col">PHONE NUMBER</th>
-                    <th scope="col">EMAIL</th>
-                    <th scope="col">STATUS</th>
-                    <th scope="col">DATE SENT</th>
-                    <th scope="col">PAY STATUS</th>
-                    <th scope="col">FROM</th>
-                    <th scope="col">TO</th>
-                    <th scope="col">ACTIONS</th>
+                    <th scope="col"><fmt:message key="admin_orders.room"/></th>
+                    <th scope="col"><fmt:message key="admin_orders.type"/></th>
+                    <th scope="col"><fmt:message key="admin_orders.name"/></th>
+                    <th scope="col"><fmt:message key="admin_orders.surname"/></th>
+                    <th scope="col"><fmt:message key="admin_orders.phone"/></th>
+                    <th scope="col"><fmt:message key="admin_orders.email"/></th>
+                    <th scope="col"><fmt:message key="admin_orders.status"/></th>
+                    <th scope="col"><fmt:message key="admin_orders.datesent"/></th>
+                    <th scope="col"><fmt:message key="admin_orders.pay"/></th>
+                    <th scope="col"><fmt:message key="admin_orders.from"/></th>
+                    <th scope="col"><fmt:message key="admin_orders.to"/></th>
+                    <th scope="col"><fmt:message key="admin_orders.action"/></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -52,10 +54,10 @@
                         <td>
                             <c:choose>
                                 <c:when test="${ order.orderPaid == true}">
-                                    YES
+                                    <fmt:message key="yes"/>
                                 </c:when>
                                 <c:otherwise>
-                                    NO
+                                    <fmt:message key="no"/>
                                 </c:otherwise>
                             </c:choose>
                         </td>
@@ -67,7 +69,7 @@
                                 <input type="hidden" name="subCommand" value="APPROVE_ORDER" />
                                 <input type="hidden" name="id" value="${order.id}" />
                                 <button type="submit" class="btn btn-primary">
-                                    APPROVE
+                                    <fmt:message key="admin_orders.action_approve"/>
                                 </button>
                             </form>
                             <form action="welcome" method="POST">
@@ -75,7 +77,7 @@
                                 <input type="hidden" name="subCommand" value="REJECT_ORDER" />
                                 <input type="hidden" name="id" value="${order.id}" />
                                 <button type="submit" class="btn btn-danger">
-                                    REJECT
+                                    <fmt:message key="admin_orders.action_reject"/>
                                 </button>
                             </form>
                         </td>

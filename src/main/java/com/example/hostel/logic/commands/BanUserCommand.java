@@ -18,7 +18,7 @@ public class BanUserCommand implements ICommand {
 
         if(!request.getMethod().equals("GET")) {
             User user = userDAO.findUserByLogin(login);
-            request.setAttribute("message", userDAO.setUserBan(user));
+            userDAO.setUserBan(user);
         }
         return JspPageName.ADMIN_PAGE;
     }

@@ -1,5 +1,8 @@
 package com.example.hostel.controller;
 
+/**
+ * The JspPageName class provides constants for the names of JSP pages.
+ */
 public class JspPageName {
 
     private JspPageName() {}

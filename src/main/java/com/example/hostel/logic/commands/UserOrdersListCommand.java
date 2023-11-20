@@ -11,7 +11,6 @@ import com.example.hostel.logic.ICommand;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 public class UserOrdersListCommand implements ICommand {
 
@@ -22,15 +21,15 @@ public class UserOrdersListCommand implements ICommand {
         Long userID = (Long) request.getSession().getAttribute("id");
         if(!request.getMethod().equals("GET")) {
             Long orderID = Long.valueOf(request.getParameter("orderID"));
-            request.setAttribute("message", cancelOrder(orderID));
+            cancelOrder(orderID);
         }
         request.setAttribute("orders", findUserOrders(userID));
         return JspPageName.USER_ORDERS_LIST;
     }
 
-    private Map<String, String> cancelOrder(Long orderID) {
+    private void cancelOrder(Long orderID) {
         try {
-            return ordersDAO.updateOrderStatus(orderID, OrderStatus.CANCELED);
+            ordersDAO.updateOrderStatus(orderID, OrderStatus.CANCELED);
         } catch (DaoException e) {
             throw new RuntimeException(e);
         }

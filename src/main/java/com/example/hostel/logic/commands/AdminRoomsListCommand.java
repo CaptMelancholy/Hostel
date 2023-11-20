@@ -31,11 +31,11 @@ public class AdminRoomsListCommand implements ICommand {
                     Long num = Long.valueOf(request.getParameter("num"));
                     float price = Float.parseFloat(request.getParameter("price"));
                     String description = request.getParameter("description");
-                    request.setAttribute("message", addRoom(num, price, description));
+                    addRoom(num, price, description);
                     break;
                 case "DELETE_ROOM":
                     Long id = Long.valueOf(request.getParameter("id"));
-                    request.setAttribute("message", deleteRoom(id));
+                    deleteRoom(id);
                     break;
             }
 
@@ -44,19 +44,19 @@ public class AdminRoomsListCommand implements ICommand {
         return JspPageName.ADMIN_ROOMS;
     }
 
-    private Map<String, String> addRoom(Long num, float price, String description) {
+    private void addRoom(Long num, float price, String description) {
         Rooms rooms = new Rooms(num, price, description);
         try {
-            return roomsDAO.addRoom(rooms);
+            roomsDAO.addRoom(rooms);
         } catch (DaoException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private Map<String, String> deleteRoom(Long id) {
+    private void deleteRoom(Long id) {
         try {
             ordersDAO.cancelOrders(id);
-            return roomsDAO.deleteRoom(id);
+            roomsDAO.deleteRoom(id);
         } catch (DaoException e) {
             throw new RuntimeException(e);
         }

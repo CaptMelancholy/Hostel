@@ -13,14 +13,13 @@
     </welcome-file-list>
 
     <filter>
-        <filter-name>SessionFilter</filter-name>
-        <filter-class>com.example.hostel.filters.SessionFilter</filter-class>
+        <filter-name>localizationFilter</filter-name>
+        <filter-class>com.example.hostel.filters.LocalizationFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>SessionFilter</filter-name>
-        <url-pattern>/welcome?command=ADMIN_PAGE</url-pattern>
+        <filter-name>localizationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
-
     <servlet>
         <servlet-name>main</servlet-name>
         <servlet-class>com.example.hostel.controller.FrontController</servlet-class>
@@ -30,7 +29,10 @@
         <url-pattern>/welcome</url-pattern>
     </servlet-mapping>
 
-
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/jsp/error.jsp</location>
+    </error-page>
 
     
 </web-app>

@@ -5,8 +5,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The OrdersExtractor class is responsible for extracting data from a ResultSet and converting it into a List of Orders objects.
+ */
 public class OrdersExtractor {
 
+    /**
+     * Extracts data from the given ResultSet and converts it into a List of Orders objects.
+     *
+     * @param resultSet The ResultSet containing the data to be extracted.
+     * @return A List of Orders objects extracted from the ResultSet.
+     * @throws SQLException If an error occurs while accessing the ResultSet.
+     */
     public List<Orders> extractData(ResultSet resultSet) throws SQLException {
         List<Orders> orders = new ArrayList<>();
         while(resultSet.next()) {

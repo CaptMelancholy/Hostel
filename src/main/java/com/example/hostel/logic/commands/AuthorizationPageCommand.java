@@ -10,7 +10,10 @@ import com.example.hostel.exceptions.DaoException;
 import com.example.hostel.logic.ICommand;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public class AuthorizationPageCommand implements ICommand {
 
@@ -28,6 +31,13 @@ public class AuthorizationPageCommand implements ICommand {
 
     private Map<String, String> login(HttpServletRequest request, String login, String password) {
         User user;
+        Map<String, String> messages = new HashMap<>();
+        Object lang = request.getSession().getAttribute("lang");
+        if (lang == null) {
+            lang = "en";
+        }
+        Locale locale = new Locale(lang.toString());
+        ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
         try {
             user = userDAO.findUserByLoginAndPass(login, password).orElse(null);
 
@@ -35,7 +45,7 @@ public class AuthorizationPageCommand implements ICommand {
             throw new RuntimeException(e);
         }
         if(user == null) {
-
+            messages.put("error", rb.getString("AUTHORISATION_ERROR"));
         } else {
             if(user.getBanStatus()) {
                 request.getSession().setAttribute("role", "BANNED");
@@ -46,7 +56,8 @@ public class AuthorizationPageCommand implements ICommand {
             request.getSession().setAttribute("name", user.getUserName() + " " + user.getUserSurname());
             request.getSession().setAttribute("id", user.getId());
             request.getSession().setAttribute("discount", user.getDiscount() == 0.0 ? 0 : user.getDiscount());
+            messages.put("success", rb.getString("AUTHORISATION_SUCCESS"));
         }
-        return null;
+        return messages;
     }
 }

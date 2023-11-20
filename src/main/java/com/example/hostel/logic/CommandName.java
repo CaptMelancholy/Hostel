@@ -1,5 +1,8 @@
 package com.example.hostel.logic;
 
+/**
+ * The CommandName enum represents the names of different commands.
+ */
 public enum CommandName {
     MAIN_PAGE,
     AUTH_PAGE,

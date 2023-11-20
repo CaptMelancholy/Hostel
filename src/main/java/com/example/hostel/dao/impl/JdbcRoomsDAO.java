@@ -5,21 +5,27 @@ import com.example.hostel.beans.rooms.RoomsExtractor;
 import com.example.hostel.dao.RoomsDAO;
 import com.example.hostel.exceptions.DaoException;
 import com.example.hostel.uttils.ConnectionPool;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+/**
+ * The JdbcRoomsDAO class implements the RoomsDAO interface and provides
+ * functionality to interact with the database for orders related operations.
+ */
 public class JdbcRoomsDAO implements RoomsDAO {
 
     private static volatile RoomsDAO instance;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final RoomsExtractor roomsExtractor = new RoomsExtractor();
+    private static final Logger logger = Logger.getLogger(RoomsDAO.class);
     private static final String ADD_ROOM = "INSERT INTO rooms (rooms_guest_amount, rooms_price, rooms_discription, rooms_deleted) VALUE (?, ?, ?, ?)";
 
     private static final String DELETE_ROOM = "UPDATE rooms SET rooms_deleted = ? WHERE id_rooms = ?";
@@ -54,15 +60,17 @@ public class JdbcRoomsDAO implements RoomsDAO {
             statement.setLong(1, ID);
             ResultSet resultSet = statement.executeQuery();
             room = roomsExtractor.extractDataOnce(resultSet);
+            logger.log(Level.INFO, "Success in finding room by ID");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.log(Level.ERROR, "Error in findRoomByID", e);
+            throw new DaoException("Error in finding room by ID");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in findRoomByID", e);
                 }
             }
             if (conn != null) {
@@ -73,7 +81,7 @@ public class JdbcRoomsDAO implements RoomsDAO {
     }
 
     @Override
-    public Map<String, String> updateRoom(Rooms room) throws DaoException {
+    public void updateRoom(Rooms room) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -86,27 +94,27 @@ public class JdbcRoomsDAO implements RoomsDAO {
             statement.setBoolean(4, room.getDeleted());
             statement.setLong(5, room.getId());
             statement.executeUpdate();
+            logger.log(Level.INFO, "Success in in updating room");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.log(Level.ERROR, "Error in updateRoom", e);
+            throw new DaoException("Error in updating room");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in updateRoom", e);
                 }
             }
             if (conn != null) {
                 connectionPool.releaseConnection(conn);
             }
         }
-
-        return null;
     }
 
     @Override
-    public Map<String, String> addRoom(Rooms room) throws DaoException {
+    public void addRoom(Rooms room) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -118,26 +126,27 @@ public class JdbcRoomsDAO implements RoomsDAO {
             statement.setString(3, room.getDescription());
             statement.setBoolean(4, room.getDeleted());
             statement.executeUpdate();
+            logger.log(Level.INFO, "Success in updating room");
         } catch (SQLException e) {
-            throw new DaoException("error in add");
+            logger.log(Level.ERROR, "Error in addRoom", e);
+            throw new DaoException("Error in add room");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in addRoom", e);
                 }
             }
             if (conn != null) {
                 connectionPool.releaseConnection(conn);
             }
         }
-        return null;
     }
 
     @Override
-    public Map<String, String> deleteRoom(Long id) throws DaoException {
+    public void deleteRoom(Long id) throws DaoException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -147,22 +156,23 @@ public class JdbcRoomsDAO implements RoomsDAO {
             statement.setBoolean(1, true);
             statement.setLong(2, id);
             statement.executeUpdate();
+            logger.log(Level.INFO, "Success in deleting room");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.log(Level.ERROR, "Error in deleteRoom", e);
+            throw new DaoException("Error in delete room");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in deleteRoom", e);
                 }
             }
             if (conn != null) {
                 connectionPool.releaseConnection(conn);
             }
         }
-        return null;
     }
 
     @Override
@@ -176,15 +186,17 @@ public class JdbcRoomsDAO implements RoomsDAO {
            statement = conn.prepareStatement(FIND_ALL_ROOMS);
            ResultSet resultSet = statement.executeQuery();
            rooms = roomsExtractor.extractData(resultSet);
+            logger.log(Level.INFO, "Success in searching all rooms");
         } catch (SQLException e) {
-            throw new DaoException("error in add");
+            logger.log(Level.ERROR, "Error in findAllRooms", e);
+            throw new DaoException("Error in searching all rooms");
         } finally {
             lock.writeLock().unlock();
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
-                    throw new DaoException("fuck");
+                } catch (SQLException e) {
+                    logger.log(Level.ERROR, "Error in findAllRooms", e);
                 }
             }
             if (conn != null) {
